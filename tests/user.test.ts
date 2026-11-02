@@ -26,6 +26,65 @@ describe('authenticated post API', () => {
         expect(response.status).toBe(401);
     });
 
+    it('updates the authenticated user name and validates the input', async () => {
+        const cookies = `token=${token}`;
+        const updateResponse = await request(app)
+            .patch('/api/v1/users/me')
+            .set('Cookie', cookies)
+            .send({ username: 'updated-user' });
+
+        expect(updateResponse.status).toBe(200);
+        expect(updateResponse.body.user).toMatchObject({
+            username: 'updated-user',
+            profileImage: null,
+        });
+
+        const invalidResponse = await request(app)
+            .patch('/api/v1/users/me')
+            .set('Cookie', cookies)
+            .send({ username: ' ' });
+
+        expect(invalidResponse.status).toBe(400);
+        expect(invalidResponse.body.errors.username).toBeDefined();
+
+        await request(app)
+            .patch('/api/v1/users/me')
+            .set('Cookie', cookies)
+            .send({ username: 'test-user' });
+    });
+
+    it('uploads and persists a supported profile image', async () => {
+        const image = Buffer.from(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/lZ8AAAAASUVORK5CYII=',
+            'base64',
+        );
+        const response = await request(app)
+            .post('/api/v1/users/me/profile-image')
+            .set('Cookie', `token=${token}`)
+            .attach('image', image, { filename: 'avatar.png', contentType: 'image/png' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.user.profileImage).toBe(`data:image/png;base64,${image.toString('base64')}`);
+
+        const savedUser = await prisma.user.findUnique({
+            where: { email },
+            select: { profileImage: true },
+        });
+        expect(savedUser?.profileImage).toBe(response.body.user.profileImage);
+    });
+
+    it('rejects profile images without supported image content', async () => {
+        const response = await request(app)
+            .post('/api/v1/users/me/profile-image')
+            .set('Cookie', `token=${token}`)
+            .attach('image', Buffer.from('not an image'), {
+                filename: 'avatar.png',
+                contentType: 'image/png',
+            });
+
+        expect(response.status).toBe(400);
+    });
+
     it('creates, lists, updates, and deletes the authenticated user post', async () => {
         const cookies = `token=${token}`;
         const createResponse = await request(app)
@@ -44,7 +103,12 @@ describe('authenticated post API', () => {
 
         expect(listResponse.status).toBe(200);
         expect(listResponse.body).toEqual(
-            expect.arrayContaining([expect.objectContaining({ id: postId, author: { username: 'test-user' } })]),
+            expect.arrayContaining([
+                expect.objectContaining({
+                    id: postId,
+                    author: expect.objectContaining({ username: 'test-user' }),
+                }),
+            ]),
         );
 
         const updateResponse = await request(app)

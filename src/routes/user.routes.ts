@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { routeGuard } from '../middlewares/auth.middleware';
 import { idempotencyKey } from '../middlewares/idempotency.middleware';
+import { uploadProfileImage } from '../middlewares/profile-image.middleware';
+import { updateProfileImage, updateUsername } from '../controllers/settings.controllers';
 import {
   createPost,
   deletePost,
@@ -11,6 +13,122 @@ import {
 } from '../controllers/app.controllers';
 
 const router = Router();
+
+/**
+ * @openapi
+ * /api/v1/users/me:
+ *   patch:
+ *     tags: [Users]
+ *     summary: Update the authenticated user's name
+ *     security:
+ *       - accessCookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [username]
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 minLength: 2
+ *                 description: Leading and trailing whitespace is removed.
+ *     responses:
+ *       '200':
+ *         description: Name updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [message, user]
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Name updated successfully
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '400':
+ *         description: Username is missing or shorter than 2 characters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       '401':
+ *         description: Access cookie is missing, invalid, or expired.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '500':
+ *         description: Server failed to update the name.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ */
+router.patch('/users/me', routeGuard, updateUsername);
+
+/**
+ * @openapi
+ * /api/v1/users/me/profile-image:
+ *   post:
+ *     tags: [Users]
+ *     summary: Upload or replace the authenticated user's profile image
+ *     description: Stores a base64 data URI in the user's profileImage field. Files must be JPEG, PNG, GIF, or WebP and no larger than 5 MiB.
+ *     security:
+ *       - accessCookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [image]
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       '200':
+ *         description: Profile image updated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [message, user]
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Profile image updated successfully
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '400':
+ *         description: Missing file, unsupported format, or uploaded file content does not match its declared image type.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '401':
+ *         description: Access cookie is missing, invalid, or expired.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '413':
+ *         description: Uploaded image exceeds 5 MiB.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '500':
+ *         description: Server failed to update the profile image.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ */
+router.post('/users/me/profile-image', routeGuard, uploadProfileImage, updateProfileImage);
 
 /**
  * @openapi

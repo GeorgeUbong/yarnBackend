@@ -8,20 +8,18 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String @db.VarChar(255)
-  username String
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   @db.VarChar(255)
+  username  String
   createdAt DateTime @default(now())
-
-  posts    Post[]
+  posts     Post[]
 }
 
 model Post {
-  id       String  @id @default(cuid())
-  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id       String   @id @default(cuid())
   authorId Int
-
   content  String
   postedAt DateTime @default(now())
+  author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

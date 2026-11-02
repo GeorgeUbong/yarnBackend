@@ -47,10 +47,11 @@ app.use(cookieParser());
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
-        info: { title: 'My API', version: '1.0.0' },
+        info: { title: 'My API', version: '1.1.0' },
         tags: [
             { name: 'Auth', description: 'Authentication and token management' },
-            { name: 'Posts', description: 'Post operations' },
+            { name: 'App', description: 'Post operations' },
+            { name: 'Users', description: 'User profile operations' },
         ],
         components: {
             securitySchemes: {
@@ -74,6 +75,12 @@ const swaggerOptions = {
                         id: { type: 'integer', example: 1 },
                         username: { type: 'string', example: 'snapuser' },
                         email: { type: 'string', format: 'email', example: 'user@example.com' },
+                        profileImage: {
+                            type: 'string',
+                            nullable: true,
+                            description: 'Base64 data URI for the profile image, or null when no image is set.',
+                            example: 'data:image/png;base64,iVBORw0KGgo...',
+                        },
                     },
                 },
                 Post: {

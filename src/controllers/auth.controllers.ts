@@ -47,7 +47,7 @@ export const signUp = async (
         const hashedPassword = await bcrypt.hash(password, 12);
         const user = await prisma.user.create({
             data: { username, email, password: hashedPassword },
-            select: { id: true, username: true, email: true },
+            select: { id: true, username: true, email: true, profileImage: true },
 
         });
         const token = generateToken(String(user.id));
@@ -83,6 +83,7 @@ export const signIn = async (
 
         const user = await prisma.user.findUnique({
             where: { email },
+            select: { id: true, username: true, email: true, password: true, profileImage: true },
         });
 
         if (!user) {
@@ -105,9 +106,10 @@ export const signIn = async (
         const refreshToken = generateRefreshToken(String(user.id));
         setAuthCookies(res, token, refreshToken);
 
+        const { password: _password, ...safeUser } = user;
         return res.status(200).json({
             message: "Login successful",
-            user,
+            user: safeUser,
             token,
             refreshToken
         });

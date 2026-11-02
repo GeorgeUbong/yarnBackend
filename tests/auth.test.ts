@@ -54,6 +54,8 @@ describe('authentication API', () => {
 
         expect(login.status).toBe(200);
         expect(login.body.token).toEqual(expect.any(String));
+        expect(login.body.user.profileImage).toBeNull();
+        expect(login.body.user).not.toHaveProperty('password');
 
         const invalidLogin = await request(app)
             .post('/api/v1/login')
