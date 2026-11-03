@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { routeGuard } from '../middlewares/auth.middleware';
 import { idempotencyKey } from '../middlewares/idempotency.middleware';
 import { uploadProfileImage } from '../middlewares/profile-image.middleware';
-import { updateProfileImage, updateUsername } from '../controllers/settings.controllers';
+import {
+  getCurrentUser,
+  updateProfileImage,
+  updateUsername,
+} from '../controllers/settings.controllers';
 import {
   createPost,
   deletePost,
@@ -17,7 +21,44 @@ const router = Router();
 /**
  * @openapi
  * /api/v1/users/me:
- *   patch:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get the authenticated user's profile
+ *     security:
+ *       - accessCookieAuth: []
+ *     responses:
+ *       '200':
+ *         description: Current user profile.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: [message, user]
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       '401':
+ *         description: Access cookie is missing or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '404':
+ *         description: Authenticated user no longer exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ *       '500':
+ *         description: Server failed to retrieve current user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageError'
+ * /api/v1/users/name:
+ *   put:
  *     tags: [Users]
  *     summary: Update the authenticated user's name
  *     security:
@@ -67,7 +108,8 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageError'
  */
-router.patch('/users/me', routeGuard, updateUsername);
+router.get('/users/me', routeGuard, getCurrentUser);
+router.put('/users/name', routeGuard, updateUsername);
 
 /**
  * @openapi

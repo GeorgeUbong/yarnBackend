@@ -171,3 +171,19 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Failed to refresh access token' });
     }
 };
+
+export const logout = (_req: Request, res: Response) => {
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict' as const,
+    };
+
+    res.clearCookie('token', { ...cookieOptions, path: '/' });
+    res.clearCookie('refreshToken', {
+        ...cookieOptions,
+        path: '/api/v1/refresh',
+    });
+
+    return res.status(200).json({ message: 'Logged out successfully' });
+};

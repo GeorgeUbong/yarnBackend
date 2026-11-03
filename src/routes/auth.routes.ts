@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  logout,
   refreshAccessToken,
   signIn,
   signUp,
@@ -86,7 +87,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageError'
  */
-router.post('/signup', rateLimiter, signUp);
+router.post('/signup', signUp); // rateLimiter,
 
 /**
  * @openapi
@@ -163,7 +164,7 @@ router.post('/signup', rateLimiter, signUp);
  *             schema:
  *               $ref: '#/components/schemas/MessageError'
  */
-router.post('/login', rateLimiter, signIn);
+router.post('/login',  signIn); //rateLimiter,
 
 /**
  * @openapi
@@ -207,5 +208,17 @@ router.post('/login', rateLimiter, signIn);
  *               $ref: '#/components/schemas/MessageError'
  */
 router.post('/refresh', refreshAccessToken);
+
+/**
+ * @openapi
+ * /api/v1/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Sign out and clear authentication cookies
+ *     responses:
+ *       '200':
+ *         description: Authentication cookies cleared.
+ */
+router.post('/logout', logout);
 
 export default router;

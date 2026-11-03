@@ -50,7 +50,6 @@ const swaggerOptions = {
         info: { title: 'My API', version: '1.1.0' },
         tags: [
             { name: 'Auth', description: 'Authentication and token management' },
-            { name: 'App', description: 'Post operations' },
             { name: 'Users', description: 'User profile operations' },
         ],
         components: {
@@ -152,7 +151,7 @@ app.use("/api/v1/", authRoutes);
 app.use("/api/v1/", userRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.get("/", (req:Request, res:Response) => {
+app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
         message: "the app is healthy "
     });

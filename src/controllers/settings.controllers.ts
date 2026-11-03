@@ -7,6 +7,28 @@ const getAuthenticatedUserId = (req: Request) => {
   return Number.isSafeInteger(userId) && userId > 0 ? userId : null;
 };
 
+export const getCurrentUser = async (req: Request, res: Response) => {
+  const userId = getAuthenticatedUserId(req);
+  if (userId === null) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, email: true, profileImage: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'Current user retrieved successfully', user });
+  } catch {
+    return res.status(500).json({ message: 'Failed to retrieve current user' });
+  }
+};
+
 const detectImageMimeType = (buffer: Buffer): string | null => {
   if (
     buffer.length >= 8 &&
