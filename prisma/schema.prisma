@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String   @db.VarChar(255)
-  username  String
-  createdAt DateTime @default(now())
-  posts     Post[]
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String   @db.VarChar(255)
+  username     String
+  profileImage String?  @db.VarChar(7000000)
+  createdAt    DateTime @default(now())
+  posts        Post[]
 }
 
 model Post {

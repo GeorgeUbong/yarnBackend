@@ -17,7 +17,7 @@ const configuredOrigins = (process.env.CORS_ORIGINS ?? '')
     .filter(Boolean);
 const developmentOrigins = process.env.NODE_ENV === 'production'
     ? []
-    : ['http://localhost:3000', 'http://localhost:5173'];
+    : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001'];
 const allowedOrigins = new Set([...configuredOrigins, ...developmentOrigins]);
 
 if (process.env.NODE_ENV === 'production' && configuredOrigins.length === 0) {
@@ -151,6 +151,12 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api/v1/", authRoutes);
 app.use("/api/v1/", userRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.get("/", (req:Request, res:Response) => {
+    res.status(200).json({
+        message: "the app is healthy "
+    });
+});
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     app.listen(PORT, () => {
