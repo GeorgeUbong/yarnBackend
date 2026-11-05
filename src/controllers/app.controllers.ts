@@ -11,14 +11,14 @@ export const getPosts = async (
         const posts = await prisma.post.findMany({
             include: {
                 author: {
-                    select: { id: true, username: true },
+                    select: { id: true, username: true, profileImage: true },
                 },
             },
         });
 
         if (posts.length === 0) {
             return res.status(200).json({
-                message: "You have no posts yet",
+                message: "There are no posts yet",
             });
         }
 
