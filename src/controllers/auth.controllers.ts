@@ -12,7 +12,7 @@ import bcrypt from 'bcryptjs';
 const refreshCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict' as const,
+    sameSite: 'none' as const,
     path: '/api/v1/refresh',
 };
 
@@ -176,7 +176,7 @@ export const logout = (_req: Request, res: Response) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict' as const,
+        sameSite: 'none' as const,
     };
 
     res.clearCookie('token', { ...cookieOptions, path: '/' });

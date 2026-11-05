@@ -77,7 +77,7 @@ Every API request must include:
 credentials: 'include'
 ```
 
-For local development, use `http://localhost:5173` (the backend allows it) and API `http://localhost:3000`. In production, configure `CORS_ORIGINS` on the backend to the exact frontend origin. Because the cookies use `SameSite=Strict`, the deployed frontend and API must be same-site; cross-site deployments will not retain the session.
+For local development, use `http://localhost:5173` (the backend allows it) and API `http://localhost:3000`. In production, configure `CORS_ORIGINS` on the backend to the exact frontend origin. The authentication cookies use `SameSite=None` to support cross-site frontend/API deployments; production cookies are `Secure`, so both deployments must use HTTPS.
 
 Although login/signup/refresh responses currently contain token strings, **do not store tokens in localStorage, sessionStorage, or app state**. Treat the cookies as the session mechanism. The returned `token` fields are unnecessary to this frontend design.
 
@@ -318,4 +318,4 @@ Error behavior:
 - Build auth bootstrap with refresh-once behavior.
 - Implement Login, Signup, Feed, My Posts, Composer, Editor, Search, and all loading/empty/error states.
 - Verify with browser devtools that cookies are set and attached; never log or persist token response values.
-- Confirm the production frontend origin is present in backend `CORS_ORIGINS` and is same-site with the API.
+- Confirm the production frontend origin is present in backend `CORS_ORIGINS` and both frontend and API use HTTPS.

@@ -30,7 +30,7 @@ export const setAuthCookies = (
   res.cookie('token', accessToken, {
     httpOnly: true,
     secure,
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: ACCESS_TOKEN_MAX_AGE,
     path: '/',
   });
@@ -38,7 +38,7 @@ export const setAuthCookies = (
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure,
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: REFRESH_TOKEN_MAX_AGE,
     path: '/api/v1/refresh',
   });

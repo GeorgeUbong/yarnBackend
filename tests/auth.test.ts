@@ -34,9 +34,15 @@ describe('authentication API', () => {
         expect(response.status).toBe(201);
         expect(response.body.user).toMatchObject({ username: 'auth-user', email });
         expect(response.body.token).toEqual(expect.any(String));
-        expect(response.headers['set-cookie']).toEqual(
-            expect.arrayContaining([expect.stringContaining('token='), expect.stringContaining('refreshToken=')]),
+        const cookies = response.headers['set-cookie'];
+        expect(cookies).toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('token='),
+                expect.stringContaining('refreshToken='),
+                expect.stringContaining('SameSite=None'),
+            ]),
         );
+        expect(cookies.every((cookie) => cookie.includes('SameSite=None'))).toBe(true);
     });
 
     it('rejects duplicate email registration', async () => {
