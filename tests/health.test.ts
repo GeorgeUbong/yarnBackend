@@ -9,7 +9,7 @@ vi.mock('../src/lib/prisma', () => ({
   prisma: { $queryRaw: queryRaw },
 }));
 
-import { app } from '../src/app';
+import { app } from '../src/index';
 
 describe('GET /health', () => {
   afterEach(() => {
