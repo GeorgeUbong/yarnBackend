@@ -77,7 +77,7 @@ Every API request must include:
 credentials: 'include'
 ```
 
-For local development, use `http://localhost:5173` (the backend allows it) and API `http://localhost:3000`. In production, configure `CORS_ORIGINS` on the backend to the exact frontend origin. The authentication cookies use `SameSite=None` to support cross-site frontend/API deployments; production cookies are `Secure`, so both deployments must use HTTPS.
+For local development, use `http://localhost:5173` (the backend allows it) and API `http://localhost:3000`. In production, configure `CORS_ORIGINS` on the backend to the exact frontend origin. `COOKIE_SAMESITE` defaults to `none` in production to support direct cross-site frontend/API calls; production cookies are `Secure`, so both deployments must use HTTPS. After the frontend's same-origin Vercel proxy is live, set `COOKIE_SAMESITE=lax` on the backend.
 
 Although login/signup/refresh responses currently contain token strings, **do not store tokens in localStorage, sessionStorage, or app state**. Treat the cookies as the session mechanism. The returned `token` fields are unnecessary to this frontend design.
 
