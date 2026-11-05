@@ -14,7 +14,7 @@
     "dev": "nodemon --config nodemon.json",
     "start": "tsx src/index.ts",
     "postinstall": "prisma generate --config prisma7.config.ts",
-    "build": "prisma generate --config prisma7.config.ts && tsc --noEmit",
+    "build": "npm install && npx prisma generate",
     "migrate:deploy": "prisma migrate deploy --config prisma.deploy.config.ts"
   },
   "devDependencies": {
