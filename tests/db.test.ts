@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../src/lib/prisma';
 
 describe('database integration', () => {
     const email = `db-${randomUUID()}@example.com`;

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../lib/prisma';
 import { updateUsernameSchema } from '../utils/profile.validation';
 
 const getAuthenticatedUserId = (req: Request) => {

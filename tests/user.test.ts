@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/index';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../src/lib/prisma';
 import { registerTestUser } from './helpers';
 
 describe('authenticated post API', () => {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../lib/prisma";
 import { loginSchema, signupSchema } from '../utils/auth.validation';
 import {
     generateRefreshToken,

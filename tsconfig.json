@@ -5,6 +5,9 @@
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
     "ignoreDeprecations": "6.0"
-  }
+  },
+  "include": ["src/**/*.ts", "api/**/*.ts", "prisma/**/*.ts", "prisma7.config.ts", "prisma.deploy.config.ts"]
 }
