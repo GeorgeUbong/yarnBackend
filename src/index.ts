@@ -10,6 +10,7 @@ import { pathToFileURL } from 'node:url';
 import { prisma } from './lib/prisma';
 
 export const app = express();
+app.set("trust proxy", 1);
 
 const configuredOrigins = (process.env.CORS_ORIGINS ?? '')
     .split(',')
