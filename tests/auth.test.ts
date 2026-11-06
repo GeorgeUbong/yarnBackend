@@ -39,10 +39,10 @@ describe('authentication API', () => {
             expect.arrayContaining([
                 expect.stringContaining('token='),
                 expect.stringContaining('refreshToken='),
-                expect.stringContaining('SameSite=None'),
+                expect.stringContaining('SameSite=Lax'),
             ]),
         );
-        expect(cookies.every((cookie) => cookie.includes('SameSite=None'))).toBe(true);
+        expect(cookies.every((cookie) => cookie.includes('SameSite=Lax'))).toBe(true);
     });
 
     it('rejects duplicate email registration', async () => {

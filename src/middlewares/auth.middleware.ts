@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-
-const ACCESS_TOKEN_MAX_AGE = 4 * 60 * 60 * 1000;
-const REFRESH_TOKEN_MAX_AGE = 10 * 24 * 60 * 60 * 1000;
+import { authCookieOptions, refreshCookieOptions } from '../utils/cookieOptions';
 
 export const generateToken = (authorId: string) => {
     return jwt.sign(
@@ -25,23 +23,8 @@ export const setAuthCookies = (
   accessToken: string,
   refreshToken: string
 ) => {
-  const secure = process.env.NODE_ENV === 'production';
-
-  res.cookie('token', accessToken, {
-    httpOnly: true,
-    secure,
-    sameSite: 'none',
-    maxAge: ACCESS_TOKEN_MAX_AGE,
-    path: '/',
-  });
-
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure,
-    sameSite: 'none',
-    maxAge: REFRESH_TOKEN_MAX_AGE,
-    path: '/api/v1/refresh',
-  });
+  res.cookie('token', accessToken, authCookieOptions);
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 };
 
 

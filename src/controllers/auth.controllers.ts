@@ -6,18 +6,12 @@ import {
     generateToken,
     setAuthCookies,
 } from '../middlewares/auth.middleware';
+import { clearCookieOptions, clearRefreshCookieOptions } from '../utils/cookieOptions';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-const refreshCookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none' as const,
-    path: '/api/v1/refresh',
-};
-
 const clearRefreshCookie = (res: Response) => {
-    res.clearCookie('refreshToken', refreshCookieOptions);
+    res.clearCookie('refreshToken', clearRefreshCookieOptions);
 };
 
 export const signUp = async (
@@ -173,17 +167,8 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 };
 
 export const logout = (_req: Request, res: Response) => {
-    const cookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none' as const,
-    };
-
-    res.clearCookie('token', { ...cookieOptions, path: '/' });
-    res.clearCookie('refreshToken', {
-        ...cookieOptions,
-        path: '/api/v1/refresh',
-    });
+    res.clearCookie('token', clearCookieOptions);
+    res.clearCookie('refreshToken', clearRefreshCookieOptions);
 
     return res.status(200).json({ message: 'Logged out successfully' });
 };
