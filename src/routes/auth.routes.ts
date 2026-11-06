@@ -87,7 +87,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageError'
  */
-router.post('/signup', signUp); // rateLimiter,
+router.post('/signup',  rateLimiter, signUp); //
 
 /**
  * @openapi
@@ -164,7 +164,7 @@ router.post('/signup', signUp); // rateLimiter,
  *             schema:
  *               $ref: '#/components/schemas/MessageError'
  */
-router.post('/login',  signIn); //rateLimiter,
+router.post('/login',   rateLimiter, signIn); //rateLimiter,
 
 /**
  * @openapi
@@ -219,6 +219,6 @@ router.post('/refresh', refreshAccessToken);
  *       '200':
  *         description: Authentication cookies cleared.
  */
-router.post('/logout', logout);
+router.post('/logout',  rateLimiter, logout);
 
 export default router;
